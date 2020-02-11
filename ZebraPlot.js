@@ -44,6 +44,9 @@ $(document).ready(function(){
 		if(event.target == $('div#menu')[0])
 			$('div#menu').hide();
 	});
+	$('input#team').keypress(function(e){
+		if(e.keyCode==13) $('button#go').click();
+    });
 	
 	Object.keys(events).forEach(function(name){$('select#event')[0].append(new Option(name, events[name]))});
 
