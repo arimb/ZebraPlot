@@ -12,9 +12,18 @@
 <div id='menu' class='modal'>
 	<div class='modal-content'>
 		<span class="close">&times;</span>
-		<select id='event'></select>
-		<input id='team' type='number' placeholder='Team Number'>
-		<button id='go'>GO</button>
+		<div class='tab'>
+			<button class='tablinks active' id='Heatmap' onclick='openTab(event, "Heatmap")'>HEATMAP</button>
+			<button class='tablinks' id='AutoPath' onclick='openTab(event, "AutoPath")'>AUTO PATH</button>
+		</div>
+		
+		<div class='tabcontent' align='center'>
+			<select id='event'></select>
+			<div>
+				<input id='team' type='number' placeholder='Team Number' style='width: 7em;'>
+				<button id='go'>GO</button>
+			</div>
+		</div>
 	</div>
 </div>
 

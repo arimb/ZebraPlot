@@ -44,7 +44,10 @@ $(document).ready(function(){
 		if(event.target == $('div#menu')[0])
 			$('div#menu').hide();
 	});
+	
 	Object.keys(events).forEach(function(name){$('select#event')[0].append(new Option(name, events[name]))});
+
+	$('.tab.active')
 
 	var width = $('img').width();
 	var height = $('img').height();
@@ -90,3 +93,9 @@ $(document).ready(function(){
 		request.send();
 	});
 });
+
+function openTab(evt, tabName){
+	console.log(tabName);
+	$('.tablinks').removeClass('active');
+	$('.tablinks#'+tabName).addClass('active');
+}
