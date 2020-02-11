@@ -11,10 +11,12 @@
 
 <div id='menu' class='modal'>
 	<div class='modal-content'>
-		<span class="close">&times;</span>
+		
 		<div class='tab'>
 			<button class='tablinks active' id='Heatmap' onclick='openTab(event, "Heatmap")'>HEATMAP</button>
 			<button class='tablinks' id='AutoPath' onclick='openTab(event, "AutoPath")'>AUTO PATH</button>
+			<button class='tablinks' id='Hotspots' onclick='openTab(event, "Hotspots")'>HOTSPOTS</button>
+			<span class="close">&times;</span>
 		</div>
 		
 		<div class='tabcontent' align='center'>
@@ -28,7 +30,7 @@
 </div>
 
 <button id='menu'>SELECT TEAM</button>
-<div id='canvas-wrapper' width='100%'>
+<div id='canvas-wrapper' width='100%' style='position: relative;'>
 	<img id='image' src='Field.png'>
 </div>
 

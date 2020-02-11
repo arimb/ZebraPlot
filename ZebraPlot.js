@@ -32,6 +32,7 @@ const events = {
 };
 const tba_api = 'https://www.thebluealliance.com/api/v3';
 const tba_params = 'accept=application/json&X-TBA-Auth-Key=8RP1cDp90o0ODMRwz9uSWYCMINv1qDZacjaZwQJ0NSCaWnyyK2UtS7uc2WGKmzla';
+const colors = ['#0072BD', '#D95319', '#EDB120', '#7E2F8E', '#77AC30', '#4DBEEE', '#A2142F']
 
 $(document).ready(function(){
 	$('button#menu').click(function(){
@@ -50,50 +51,84 @@ $(document).ready(function(){
 	
 	Object.keys(events).forEach(function(name){$('select#event')[0].append(new Option(name, events[name]))});
 
-	$('.tab.active')
-
 	var width = $('img').width();
 	var height = $('img').height();
 
-	var heatmapInstance = h337.create({container: $('div#canvas-wrapper')[0], radius:1/54*(width*0.914), opacity:0.5, blur:0.6});
 	$('button#go').click(function(){
 		$('div#menu').hide();
+		$('canvas').remove();
 
-		var request = new XMLHttpRequest();
-		request.open('GET', tba_api + '/team/frc' + $('input#team')[0].value + 
-			'/event/' + $('select#event').children('option:selected')[0].value + '/matches/keys?' + tba_params);
-		request.onload = function(){
-			var matches = JSON.parse(this.response);
-			const promises = matches.map(match => new Promise(resolve => 
-				resolve($.getJSON(tba_api + '/match/' + match + '/zebra_motionworks', tba_params))));
-			Promise.all(promises).then(results => {
-				var data = [];
-				results.forEach(match_data => {
-					['blue', 'red'].forEach(alliance => {
-						match_data['alliances'][alliance].forEach(team => {
-							if (team['team_key'] == 'frc'+$('input#team')[0].value){
-								team['xs'].forEach(function(a, i){
-									data.push({
-										x: Math.round((alliance=='red'?a/54:(1-a/54))*(width*0.914)+(width*0.0422)), 
-										y: Math.round((height*0.95)-(alliance=='red'?team['ys'][i]/27:(1-team['ys'][i]/27))*(height*0.901)), 
-										value: 1
-									});
-									// console.log(a);
-									// heatmapInstance.addData({x: (alliance=='blue'?(a*1000/54):(1000/54*(1-a))), y: team['ys'][i]*400/27, value: 1});
+		switch ($('.tablinks.active')[0].id) {
+			case 'Heatmap':
+				var request = new XMLHttpRequest();
+				request.open('GET', tba_api + '/team/frc' + $('input#team')[0].value + 
+					'/event/' + $('select#event').children('option:selected')[0].value + '/matches/keys?' + tba_params);
+				request.onload = function(){
+					var matches = JSON.parse(this.response);
+					const promises = matches.map(match => new Promise(resolve => 
+						resolve($.getJSON(tba_api + '/match/' + match + '/zebra_motionworks', tba_params))));
+					Promise.all(promises).then(results => {
+						var data = [];
+						var heatmapInstance = h337.create({container: $('div#canvas-wrapper')[0], radius:1/54*(width*0.914), opacity:0.5, blur:0.6});
+						results.forEach(match_data => {
+							['blue', 'red'].forEach(alliance => {
+								match_data['alliances'][alliance].forEach(team => {
+									if (team['team_key'] == 'frc'+$('input#team')[0].value){
+										team['xs'].forEach(function(a, i){
+											data.push({
+												x: transformX(a, alliance, width), 
+												y: transformY(team['ys'][i], alliance, height), 
+												value: 1
+											});
+										});
+									}
 								});
-							}
+							});
+						});
+						console.log(data);
+						heatmapInstance.setData({
+							max: data.length/500,
+							data: data
 						});
 					});
-				});
-				console.log(data);
-				heatmapInstance.setData({
-					max: data.length/500,
-					data: data
-				});
-			});
-		};
-		request.onerror = function(err){console.log(err);};
-		request.send();
+				};
+				request.onerror = function(err){console.log(err);};
+				request.send();
+			break;
+			case 'AutoPath':
+				$('div#canvas-wrapper').append('<canvas id="autopaths" width="'+width+'" height="'+height+'" style="position:absolute; left: 0px; top: 0px; width: 100%; height: 100%;"></canvas>')
+				var ctx = $('canvas')[0].getContext('2d');
+				ctx.lineWidth = "2";
+				
+				var request = new XMLHttpRequest();
+				request.open('GET', tba_api + '/team/frc' + $('input#team')[0].value + 
+					'/event/' + $('select#event').children('option:selected')[0].value + '/matches/keys?' + tba_params);
+				request.onload = function(){
+					var matches = JSON.parse(this.response);
+					const promises = matches.map(match => new Promise(resolve => 
+						resolve($.getJSON(tba_api + '/match/' + match + '/zebra_motionworks', tba_params))));
+					Promise.all(promises).then(results => {
+						results.forEach(function(match_data, i){
+							['blue', 'red'].forEach(alliance => {
+								match_data['alliances'][alliance].forEach(team => {
+									if (team['team_key'] == 'frc'+$('input#team')[0].value){
+										ctx.strokeStyle = colors[i%7];
+										ctx.beginPath();
+										ctx.moveTo(transformX(team['xs'][0], alliance, width), transformY(team['ys'][0], alliance, height));
+										team['xs'].slice(1, 160).forEach(function(a, i){
+											ctx.lineTo(transformX(a, alliance, width), transformY(team['ys'][i], alliance, height));
+										});
+										ctx.stroke();
+									}
+								});
+							});
+						});
+					});
+				};
+				request.onerror = function(err){console.log(err);};
+				request.send();
+			break;
+		}
 	});
 });
 
@@ -101,4 +136,12 @@ function openTab(evt, tabName){
 	console.log(tabName);
 	$('.tablinks').removeClass('active');
 	$('.tablinks#'+tabName).addClass('active');
+}
+
+function transformX(a, alliance, width){
+	return Math.round((alliance=='red'?a/54:(1-a/54))*(width*0.914)+(width*0.0422))
+}
+
+function transformY(a, alliance, height){
+	return Math.round((height*0.95)-(alliance=='red'?a/27:(1-a/27))*(height*0.901))
 }
