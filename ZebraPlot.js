@@ -116,7 +116,11 @@ $(document).ready(function(){
 										ctx.beginPath();
 										ctx.moveTo(transformX(team['xs'][0], alliance, width), transformY(team['ys'][0], alliance, height));
 										team['xs'].slice(1, 160).forEach(function(a, i){
-											ctx.lineTo(transformX(a, alliance, width), transformY(team['ys'][i], alliance, height));
+											if((team['xs'][i]-a)*(team['xs'][i]-a) + (team['ys'][i]-team['ys'][i+1])*(team['ys'][i]-team['ys'][i+1]) > 25){
+												ctx.moveTo(transformX(a, alliance, width), transformY(team['ys'][i+1], alliance, height));
+											}else{
+												ctx.lineTo(transformX(a, alliance, width), transformY(team['ys'][i+1], alliance, height));
+											}
 										});
 										ctx.stroke();
 									}
