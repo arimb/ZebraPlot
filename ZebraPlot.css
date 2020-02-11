@@ -47,7 +47,7 @@ input[type=number] {
   -moz-appearance:textfield;
 }
 
-img {
+img, canvas {
 	max-width: 100%;
 	max-height: 100%;
 }

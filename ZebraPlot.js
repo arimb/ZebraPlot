@@ -47,9 +47,8 @@ $(document).ready(function(){
 	Object.keys(events).forEach(function(name){$('select#event')[0].append(new Option(name, events[name]))});
 
 	var width = $('img').width();
-	console.log(width);
 	var height = $('img').height();
-	console.log(height);
+
 	var heatmapInstance = h337.create({container: $('div#canvas-wrapper')[0], radius:1/54*(width*0.914), opacity:0.5, blur:0.6});
 	$('button#go').click(function(){
 		$('div#menu').hide();
@@ -85,12 +84,9 @@ $(document).ready(function(){
 					max: data.length/500,
 					data: data
 				});
-				heatmapInstance.repaint();
 			});
 		};
 		request.onerror = function(err){console.log(err);};
 		request.send();
 	});
-
-	$('button#go').click();
 });
