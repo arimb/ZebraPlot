@@ -3,6 +3,7 @@
 <head>
 	<title>ZebraPlot</title>
 	<script type="text/javascript" src='https://code.jquery.com/jquery-3.4.1.min.js'></script>
+	<script type="text/javascript" src='heatmap.min.js'></script>
 	<link rel="stylesheet" type="text/css" href="ZebraPlot.css">
 	<script type="text/javascript" src='ZebraPlot.js'></script>
 </head>
@@ -12,12 +13,16 @@
 	<div class='modal-content'>
 		<span class="close">&times;</span>
 		<select id='event'></select>
-		<input id='team' type='number' placeholder='Team Number'>
+		<input id='team' type='number' placeholder='Team Number' value=254>
 		<button id='go'>GO</button>
 	</div>
 </div>
 
 <button id='menu'>SELECT TEAM</button>
+<div id='canvas-wrapper' width='100%'>
+	<img id='image' src='Field.png'>
+</div>
+
 
 </body>
 </html>
