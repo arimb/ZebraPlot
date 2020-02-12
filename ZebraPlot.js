@@ -113,10 +113,12 @@ $(document).ready(function(){
 					const promises = matches.map(match => new Promise(resolve => 
 						resolve($.getJSON(tba_api + '/match/' + match + '/zebra_motionworks', tba_params))));
 					Promise.all(promises).then(results => {
+						var flag = true;
 						results.forEach(function(match_data, i){
 							['blue', 'red'].forEach(alliance => {
 								match_data['alliances'][alliance].forEach(team => {
 									if (team['team_key'] == 'frc'+$('input#team')[0].value){
+										flag = false;
 										ctx.strokeStyle = colors[i%7];
 										ctx.beginPath();
 										ctx.moveTo(transformX(team['xs'][0], alliance, width), transformY(team['ys'][0], alliance, height));
@@ -133,7 +135,12 @@ $(document).ready(function(){
 							});
 						});
 						$('span#loading').hide();
-					});				};
+						if(flag){
+							alert('Team ' + $('input#team')[0].value + ' has played no matches at this event.');
+							$('button#menu').click();
+						}
+					});
+				};
 				request.onerror = function(err){console.log(err);};
 				request.send();
 			break;
