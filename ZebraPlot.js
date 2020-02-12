@@ -86,7 +86,10 @@ $(document).ready(function(){
 								});
 							});
 						});
-						console.log(data);
+						if(data.length == 0){
+							alert('Team ' + $('input#team')[0].value + ' has played no matches at this event.');
+							$('button#menu').click();
+						}
 						heatmapInstance.setData({
 							max: data.length/500,
 							data: data
