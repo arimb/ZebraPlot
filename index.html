@@ -15,14 +15,23 @@
 		<div class='tab'>
 			<button class='tablinks active' id='Heatmap' onclick='openTab(event, "Heatmap")'>HEATMAP</button>
 			<button class='tablinks' id='AutoPath' onclick='openTab(event, "AutoPath")'>AUTO PATH</button>
-			<button class='tablinks' id='Hotspots' onclick='openTab(event, "Hotspots")'>HOTSPOTS</button>
+			<button class='tablinks' id='Playback' onclick='openTab(event, "Playback")'>PLAYBACK</button>
 			<span class="close">&times;</span>
 		</div>
 		
 		<div class='tabcontent' align='center'>
 			<select id='event'></select>
 			<div>
-				<input id='team' type='number' placeholder='Team Number' style='width: 7em;'>
+				<div style='display: inline-block;'>
+					<div id='team' style='display: flex;'>
+						<span>Team: </span>
+						<select id='team'></select>
+					</div>
+					<div id='match' style='display: none;'>
+						<span>Match: </span>
+						<select id='match'></select>
+					</div>
+				</div>
 				<button id='go'>GO</button>
 			</div>
 		</div>

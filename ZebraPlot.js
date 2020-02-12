@@ -51,6 +51,31 @@ $(document).ready(function(){
 	
 	Object.keys(events).forEach(function(name){$('select#event')[0].append(new Option(name, events[name]))});
 
+	$('select#event').change(function(){
+		var request = new XMLHttpRequest();
+		request.open('GET', tba_api + '/event/' + $('select#event').children('option:selected')[0].value + '/teams/keys?' + tba_params);
+		request.onload = function(){
+			$('select#team').empty();
+			JSON.parse(this.response).sort(function(a,b){return parseInt(a.substring(3))-parseInt(b.substring(3))}).forEach(team => {
+				$('select#team').append('<option value="' + team + '">' + team.substring(3) + '</option>');
+			});
+		}
+		request.onerror = function(err){console.log(err);};
+		request.send();
+
+		var request2 = new XMLHttpRequest();
+		request2.open('GET', tba_api + '/event/' + $('select#event').children('option:selected')[0].value + '/matches/simple?' + tba_params);
+		request2.onload = function(){
+			$('select#match').empty();
+			JSON.parse(this.response).sort(function(a,b){return a['time']-b['time']}).forEach(match => {
+				$('select#match').append('<option value="' + match['key'] + '">' + match['key'].substring(match['key'].indexOf('_')+1) + '</option>');
+			});
+		}
+		request2.onerror = function(err){console.log(err);};
+		request2.send();
+	});
+	$('select#event').change();
+
 	var width = $('img').width();
 	var height = $('img').height();
 
@@ -144,14 +169,30 @@ $(document).ready(function(){
 				request.onerror = function(err){console.log(err);};
 				request.send();
 			break;
+			case 'Playback':
+				var request = new XMLHttpRequest();
+				request.open('GET', tba_api + '/team/frc' + $('input#team')[0].value + 
+					'/event/' + $('select#event').children('option:selected')[0].value + '/matches/keys?' + tba_params);
+				request.onload = function(){
+
+				}
+				request.onerror = function(err){console.log(err);};
+				request.send();
+			break;
 		}
 	});
 });
 
 function openTab(evt, tabName){
-	console.log(tabName);
 	$('.tablinks').removeClass('active');
 	$('.tablinks#'+tabName).addClass('active');
+	if(tabName == 'Playback'){
+		$('div#team').hide();
+		$('div#match').css('display', 'flex');
+	}else{
+		$('div#team').css('display', 'flex');
+		$('div#match').hide();
+	}
 }
 
 function transformX(a, alliance, width){
