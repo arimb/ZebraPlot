@@ -33,19 +33,33 @@ const events = {
 const tba_api = 'https://www.thebluealliance.com/api/v3';
 const tba_params = 'accept=application/json&X-TBA-Auth-Key=8RP1cDp90o0ODMRwz9uSWYCMINv1qDZacjaZwQJ0NSCaWnyyK2UtS7uc2WGKmzla';
 const colors = ['#0072BD', '#D95319', '#EDB120', '#7E2F8E', '#77AC30', '#4DBEEE', '#A2142F']
+const colors2 = {'red': ['#fa202f', '#fc4451', '#fc6a74'], 'blue': ['#202bfa', '#444dfc', '#6a71fc']};
+
+var animation_time = 0;
+var animation_data;
+var animation_speed;
+
+var width;
+var height;
 
 $(document).ready(function(){
+	$(window).resize(function(){
+		width = $('img').width();
+		height = $('img').height();
+	})
+	$(window).resize();
+
 	$('button#menu').click(function(){
 		$('div#modal').show();
 	});
-	$('span.close').click(function(){
+	$('span#close').click(function(){
 		$('div#modal').hide();
 	});
 	$(window).click(function(event){
 		if(event.target == $('div#modal')[0])
 			$('div#modal').hide();
 	});
-	$('input#team').keypress(function(e){
+	$('select#team').keypress(function(e){
 		if(e.keyCode==13) $('button#go').click();
     });
 	
@@ -76,8 +90,7 @@ $(document).ready(function(){
 	});
 	$('select#event').change();
 
-	var width = $('img').width();
-	var height = $('img').height();
+	
 
 	$('button#go').click(function(){
 		$('div#modal').hide();
@@ -86,8 +99,9 @@ $(document).ready(function(){
 
 		switch ($('.tablinks.active')[0].id) {
 			case 'Heatmap':
+				$('div#control').hide();
 				var request = new XMLHttpRequest();
-				request.open('GET', tba_api + '/team/frc' + $('input#team')[0].value + 
+				request.open('GET', tba_api + '/team/' + $('select#team').children('option:selected')[0].value + 
 					'/event/' + $('select#event').children('option:selected')[0].value + '/matches/keys?' + tba_params);
 				request.onload = function(){
 					var matches = JSON.parse(this.response);
@@ -99,11 +113,11 @@ $(document).ready(function(){
 						results.forEach(match_data => {
 							['blue', 'red'].forEach(alliance => {
 								match_data['alliances'][alliance].forEach(team => {
-									if (team['team_key'] == 'frc'+$('input#team')[0].value){
+									if (team['team_key'] == $('select#team').children('option:selected')[0].value){
 										team['xs'].forEach(function(a, i){
 											data.push({
-												x: transformX(a, alliance, width), 
-												y: transformY(team['ys'][i], alliance, height), 
+												x: transformX(a, alliance=='red', width), 
+												y: transformY(team['ys'][i], alliance=='red', height), 
 												value: 1
 											});
 										});
@@ -122,12 +136,13 @@ $(document).ready(function(){
 				request.send();
 			break;
 			case 'AutoPath':
+				$('div#control').hide();
 				$('div#canvas-wrapper').append('<canvas id="autopaths" width="'+width+'" height="'+height+'" style="position:absolute; left: 0px; top: 0px; width: 100%; height: 100%;"></canvas>')
 				var ctx = $('canvas')[0].getContext('2d');
 				ctx.lineWidth = "2";
 				
 				var request = new XMLHttpRequest();
-				request.open('GET', tba_api + '/team/frc' + $('input#team')[0].value + 
+				request.open('GET', tba_api + '/team/' + $('select#team').children('option:selected')[0].value + 
 					'/event/' + $('select#event').children('option:selected')[0].value + '/matches/keys?' + tba_params);
 				request.onload = function(){
 					var matches = JSON.parse(this.response);
@@ -137,15 +152,15 @@ $(document).ready(function(){
 						results.forEach(function(match_data, i){
 							['blue', 'red'].forEach(alliance => {
 								match_data['alliances'][alliance].forEach(team => {
-									if (team['team_key'] == 'frc'+$('input#team')[0].value){
+									if (team['team_key'] == $('select#team').children('option:selected')[0].value){
 										ctx.strokeStyle = colors[i%7];
 										ctx.beginPath();
-										ctx.moveTo(transformX(team['xs'][0], alliance, width), transformY(team['ys'][0], alliance, height));
+										ctx.moveTo(transformX(team['xs'][0], alliance=='red', width), transformY(team['ys'][0], alliance=='red', height));
 										team['xs'].slice(1, 160).forEach(function(a, i){
 											if((team['xs'][i]-a)*(team['xs'][i]-a) + (team['ys'][i]-team['ys'][i+1])*(team['ys'][i]-team['ys'][i+1]) > 25){
-												ctx.moveTo(transformX(a, alliance, width), transformY(team['ys'][i+1], alliance, height));
+												ctx.moveTo(transformX(a, alliance=='red', width), transformY(team['ys'][i+1], alliance=='red', height));
 											}else{
-												ctx.lineTo(transformX(a, alliance, width), transformY(team['ys'][i+1], alliance, height));
+												ctx.lineTo(transformX(a, alliance=='red', width), transformY(team['ys'][i+1], alliance=='red', height));
 											}
 										});
 										ctx.stroke();
@@ -160,17 +175,54 @@ $(document).ready(function(){
 				request.send();
 			break;
 			case 'Playback':
+				$('div#control').css('display', 'flex');
+				$('div#canvas-wrapper').append('<canvas id="autopaths" width="'+width+'" height="'+height+'" style="position:absolute; left: 0px; top: 0px; width: 100%; height: 100%;"></canvas>')
 				var request = new XMLHttpRequest();
-				request.open('GET', tba_api + '/team/frc' + $('input#team')[0].value + 
-					'/event/' + $('select#event').children('option:selected')[0].value + '/matches/keys?' + tba_params);
+				request.open('GET', tba_api + '/match/' + $('select#match').children('option:selected')[0].value + '/zebra_motionworks?' + tba_params);
 				request.onload = function(){
-
+					animation_time = 0;
+					animation_data = JSON.parse(this.response);
+					console.log(animation_data)
+					$('span#time-current').html('00:00');
+					$('span#time-length').html(String(Math.floor(animation_data['times'].length/600)).padStart(2, '0') + ':' + String(Math.floor((animation_data['times'].length/10)%60)).padStart(2, '0'));
+					$('input#time-slider').attr('max', animation_data['times'].length);
+					$('span#loading').hide();
+					drawFrame();
 				}
 				request.onerror = function(err){console.log(err);};
 				request.send();
 			break;
 		}
 	});
+
+	$('i#back').click(function(){
+		$('i#play').show();
+		$('i#pause').hide();
+		animation_time = 0;
+		animation_speed = 0;
+		drawFrame();
+	});
+	$('i#play').click(function(){
+		$('i#play').hide();
+		$('i#pause').show();
+		animation_speed = 1;
+		animate();
+	});
+	$('i#pause').click(function(){
+		$('i#play').show();
+		$('i#pause').hide();
+		animation_speed = 0;
+	});
+	$('i#fastforward').click(function(){
+		$('i#play').hide();
+		$('i#pause').show();
+		animation_speed = 2
+		animate();
+	});
+	// $('input#time-slider').click(function(){
+	// 	animation_time = $('input#time-slider').val();
+	// 	drawFrame();
+	// })
 });
 
 function openTab(evt, tabName){
@@ -185,10 +237,43 @@ function openTab(evt, tabName){
 	}
 }
 
-function transformX(a, alliance, width){
-	return Math.round((alliance=='red'?a/54:(1-a/54))*(width*0.914)+(width*0.0422))
+function transformX(a, flip, width){
+	return Math.round((flip?a/54:(1-a/54))*(width*0.914)+(width*0.0422))
 }
 
-function transformY(a, alliance, height){
-	return Math.round((height*0.95)-(alliance=='red'?a/27:(1-a/27))*(height*0.901))
+function transformY(a, flip, height){
+	return Math.round((height*0.95)-(flip?a/27:(1-a/27))*(height*0.901))
+}
+
+function animate(){
+	if(animation_speed)
+		window.requestAnimationFrame(animate);
+	animation_time += animation_speed;
+	drawFrame();
+}
+
+function drawFrame(){
+	var ctx = $('canvas')[0].getContext('2d');
+	ctx.globalCompositeOperation = 'destination-over';
+	ctx.clearRect(0, 0, width, height); // clear canvas
+	ctx.lineWidth = 2;
+
+	['red', 'blue'].forEach(alliance => {
+		animation_data['alliances'][alliance].forEach(function(team, i){
+			ctx.strokeStyles = colors2[alliance][i];
+			ctx.fillStyle = colors2[alliance][i];
+			ctx.beginPath();
+			ctx.moveTo(transformX(team['xs'][animation_time], false, width), transformY(team['ys'][animation_time], false, height));
+			for (var j=1; j<10; j++) {
+				if(j>animation_time) break;
+				ctx.lineTo(transformX(team['xs'][animation_time-j], false, width), transformY(team['ys'][animation_time-j], false, height));
+			}
+			ctx.beginPath();
+			ctx.arc(transformX(team['xs'][animation_time], false, width), transformY(team['ys'][animation_time], false, height), 5, 0, 2*Math.PI);
+			ctx.fill();
+		});
+	});
+
+	$('span#time-current').html(String(Math.floor(animation_time/600)).padStart(2, '0') + ':' + String(Math.floor((animation_time/10)%60)).padStart(2, '0'));
+	$('input#time-slider').val(animation_time);
 }
