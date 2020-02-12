@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<div id='menu' class='modal'>
+<div id='modal' class='modal'>
 	<div class='modal-content'>
 		
 		<div class='tab'>
@@ -29,7 +29,11 @@
 	</div>
 </div>
 
-<button id='menu'>SELECT TEAM</button>
+<div id='menu'>
+	<button id='menu'>SELECT TEAM</button>
+	<span id='loading' style='color: red; display: none;'>Loading...</span>
+</div>
+
 <div id='canvas-wrapper' width='100%' style='position: relative;'>
 	<img id='image' src='Field.png'>
 </div>

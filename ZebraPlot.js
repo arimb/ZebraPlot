@@ -36,14 +36,14 @@ const colors = ['#0072BD', '#D95319', '#EDB120', '#7E2F8E', '#77AC30', '#4DBEEE'
 
 $(document).ready(function(){
 	$('button#menu').click(function(){
-		$('div#menu').show();
+		$('div#modal').show();
 	});
 	$('span.close').click(function(){
-		$('div#menu').hide();
+		$('div#modal').hide();
 	});
 	$(window).click(function(event){
-		if(event.target == $('div#menu')[0])
-			$('div#menu').hide();
+		if(event.target == $('div#modal')[0])
+			$('div#modal').hide();
 	});
 	$('input#team').keypress(function(e){
 		if(e.keyCode==13) $('button#go').click();
@@ -55,7 +55,8 @@ $(document).ready(function(){
 	var height = $('img').height();
 
 	$('button#go').click(function(){
-		$('div#menu').hide();
+		$('div#modal').hide();
+		$('span#loading').show();
 		$('canvas').remove();
 
 		switch ($('.tablinks.active')[0].id) {
@@ -90,6 +91,7 @@ $(document).ready(function(){
 							max: data.length/500,
 							data: data
 						});
+						$('span#loading').hide();
 					});
 				};
 				request.onerror = function(err){console.log(err);};
@@ -127,8 +129,8 @@ $(document).ready(function(){
 								});
 							});
 						});
-					});
-				};
+						$('span#loading').hide();
+					});				};
 				request.onerror = function(err){console.log(err);};
 				request.send();
 			break;
