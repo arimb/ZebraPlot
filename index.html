@@ -44,20 +44,19 @@
 	<span id='loading' style='color: red; display: none;'>Loading...</span>
 </div>
 
-<div id='canvas-wrapper' width='100%' style='position: relative;'>
+<div id='canvas-wrapper' style='position: relative; display: inline-block;'>
 	<img id='image' src='Field.png'>
-</div>
-
-<div id='control' style='width: 100%; display: flex;'>
-	<i id='back' class="material-icons">skip_previous</i>
-	<i id='play' class="material-icons">play_arrow</i>
-	<i id='pause' class="material-icons" style='display: none;'>pause</i>
-	<i id='fastforward' class="material-icons">fast_forward</i>
-	<span id='time-current' class='time'>--:--</span>
-	<div class='slidecontainer'>
-		<input id='time-slider' class='slider' type="range" min='0' max='1' step='1' value='0'>
+	<div id='control' style='display: flex;'>
+		<i id='back' class="material-icons">skip_previous</i>
+		<i id='play' class="material-icons">play_arrow</i>
+		<i id='pause' class="material-icons" style='display: none;'>pause</i>
+		<i id='fastforward' class="material-icons">fast_forward</i>
+		<span id='time-current' class='time'>--:--</span>
+		<div class='slidecontainer'>
+			<input id='time-slider' class='slider' type="range" min='0' max='1' step='1' value='0'>
+		</div>
+		<span id='time-length' class='time'>--:--</span>
 	</div>
-	<span id='time-length' class='time'>--:--</span>
 </div>
 
 </body>

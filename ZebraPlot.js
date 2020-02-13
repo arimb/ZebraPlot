@@ -137,7 +137,7 @@ $(document).ready(function(){
 			break;
 			case 'AutoPath':
 				$('div#control').hide();
-				$('div#canvas-wrapper').append('<canvas id="autopaths" width="'+width+'" height="'+height+'" style="position:absolute; left: 0px; top: 0px; width: 100%; height: 100%;"></canvas>')
+				$('div#canvas-wrapper').append('<canvas id="autopaths" width="'+width+'" height="'+height+'" style="position:absolute; left: 0px; top: 0px;"></canvas>')
 				var ctx = $('canvas')[0].getContext('2d');
 				ctx.lineWidth = "2";
 				
@@ -176,7 +176,7 @@ $(document).ready(function(){
 			break;
 			case 'Playback':
 				$('div#control').css('display', 'flex');
-				$('div#canvas-wrapper').append('<canvas id="autopaths" width="'+width+'" height="'+height+'" style="position:absolute; left: 0px; top: 0px; width: 100%; height: 100%;"></canvas>')
+				$('div#canvas-wrapper').append('<canvas id="autopaths" width="'+width+'" height="'+height+'" style="position:absolute; left: 0px; top: 0px;"></canvas>')
 				var request = new XMLHttpRequest();
 				request.open('GET', tba_api + '/match/' + $('select#match').children('option:selected')[0].value + '/zebra_motionworks?' + tba_params);
 				request.onload = function(){
@@ -216,7 +216,7 @@ $(document).ready(function(){
 	$('i#fastforward').click(function(){
 		$('i#play').hide();
 		$('i#pause').show();
-		animation_speed = 3;
+		animation_speed = 2.5;
 		animate();
 	});
 	$('input#time-slider').on('input', function(){
@@ -248,12 +248,12 @@ function transformY(a, flip, height){
 function animate(){
 	setTimeout(function(){
 		if(animation_time>=animation_data['times'].length)
-			animation_speed = 0;
+			$('i#pause').click();
 		if(animation_speed)
 			window.requestAnimationFrame(animate);
-		animation_time += animation_speed;
+		animation_time++;
 		drawFrame();
-	}, 100);
+	}, 100/animation_speed);
 	
 }
 
