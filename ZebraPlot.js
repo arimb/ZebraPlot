@@ -222,7 +222,25 @@ $(document).ready(function(){
 	$('input#time-slider').on('input', function(){
 		animation_time = parseInt($('input#time-slider').val());
 		drawFrame();
-	})
+	});
+	$(window).keypress(function(event){
+		if(event.keyCode==32){
+			if($('i#play').is(':visible'))
+				$('i#play').click();
+			else if($('i#pause').is(':visible'))
+				$('i#pause').click();
+		}
+	});
+	$(window).keydown(function(event){
+		if($('div#control').is(':visible') && event.keyCode==37){
+			animation_time--;
+			drawFrame();
+		}
+		if($('div#control').is(':visible') && event.keyCode==39){
+			animation_time++;
+			drawFrame();
+		}
+	});
 });
 
 function openTab(evt, tabName){
@@ -238,10 +256,14 @@ function openTab(evt, tabName){
 }
 
 function transformX(a, flip, width){
+	if(a == null)
+		return null
 	return Math.round((flip?a/54:(1-a/54))*(width*0.914)+(width*0.0422))
 }
 
 function transformY(a, flip, height){
+	if(a == null)
+		return null
 	return Math.round((height*0.95)-(flip?a/27:(1-a/27))*(height*0.901))
 }
 
@@ -268,15 +290,19 @@ function drawFrame(){
 			ctx.strokeStyle = colors2[alliance][i];
 			ctx.fillStyle = colors2[alliance][i];
 			ctx.beginPath();
-			ctx.moveTo(transformX(team['xs'][animation_time], false, width), transformY(team['ys'][animation_time], false, height));
+			if(team['xs'][animation_time]!=null && team['ys'][animation_time]!=null)
+				ctx.moveTo(transformX(team['xs'][animation_time], false, width), transformY(team['ys'][animation_time], false, height));
 			for (var j=1; j<10; j++) {
 				if(j>animation_time) break;
-				ctx.lineTo(transformX(team['xs'][animation_time-j], false, width), transformY(team['ys'][animation_time-j], false, height));
+				if(team['xs'][animation_time-j]!=null && team['ys'][animation_time-j]!=null)
+					ctx.lineTo(transformX(team['xs'][animation_time-j], false, width), transformY(team['ys'][animation_time-j], false, height));
 			}
 			ctx.stroke();
-			ctx.beginPath();
-			ctx.arc(transformX(team['xs'][animation_time], false, width), transformY(team['ys'][animation_time], false, height), 5, 0, 2*Math.PI);
-			ctx.fill();
+			if(team['xs'][animation_time]!=null && team['ys'][animation_time]!=null){
+				ctx.beginPath();
+				ctx.arc(transformX(team['xs'][animation_time], false, width), transformY(team['ys'][animation_time], false, height), 5, 0, 2*Math.PI);
+				ctx.fill();
+			}
 		});
 	});
 
