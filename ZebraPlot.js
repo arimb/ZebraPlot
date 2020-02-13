@@ -33,7 +33,7 @@ const events = {
 const tba_api = 'https://www.thebluealliance.com/api/v3';
 const tba_params = 'accept=application/json&X-TBA-Auth-Key=8RP1cDp90o0ODMRwz9uSWYCMINv1qDZacjaZwQJ0NSCaWnyyK2UtS7uc2WGKmzla';
 const colors = ['#0072BD', '#D95319', '#EDB120', '#7E2F8E', '#77AC30', '#4DBEEE', '#A2142F']
-const colors2 = {'red': ['#fa202f', '#fc4451', '#fc6a74'], 'blue': ['#202bfa', '#444dfc', '#6a71fc']};
+const colors2 = {'red': ['#fa202f', '#fc6a74', '#ff6017'], 'blue': ['#202bfa', '#6a71fc', '#17b2ff']};
 
 var animation_time = 0;
 var animation_data;
@@ -216,13 +216,13 @@ $(document).ready(function(){
 	$('i#fastforward').click(function(){
 		$('i#play').hide();
 		$('i#pause').show();
-		animation_speed = 2
+		animation_speed = 3;
 		animate();
 	});
-	// $('input#time-slider').click(function(){
-	// 	animation_time = $('input#time-slider').val();
-	// 	drawFrame();
-	// })
+	$('input#time-slider').on('input', function(){
+		animation_time = parseInt($('input#time-slider').val());
+		drawFrame();
+	})
 });
 
 function openTab(evt, tabName){
@@ -246,21 +246,26 @@ function transformY(a, flip, height){
 }
 
 function animate(){
-	if(animation_speed)
-		window.requestAnimationFrame(animate);
-	animation_time += animation_speed;
-	drawFrame();
+	setTimeout(function(){
+		if(animation_time>=animation_data['times'].length)
+			animation_speed = 0;
+		if(animation_speed)
+			window.requestAnimationFrame(animate);
+		animation_time += animation_speed;
+		drawFrame();
+	}, 100);
+	
 }
 
 function drawFrame(){
 	var ctx = $('canvas')[0].getContext('2d');
 	ctx.globalCompositeOperation = 'destination-over';
 	ctx.clearRect(0, 0, width, height); // clear canvas
-	ctx.lineWidth = 2;
+	ctx.lineWidth = '2';
 
 	['red', 'blue'].forEach(alliance => {
 		animation_data['alliances'][alliance].forEach(function(team, i){
-			ctx.strokeStyles = colors2[alliance][i];
+			ctx.strokeStyle = colors2[alliance][i];
 			ctx.fillStyle = colors2[alliance][i];
 			ctx.beginPath();
 			ctx.moveTo(transformX(team['xs'][animation_time], false, width), transformY(team['ys'][animation_time], false, height));
@@ -268,6 +273,7 @@ function drawFrame(){
 				if(j>animation_time) break;
 				ctx.lineTo(transformX(team['xs'][animation_time-j], false, width), transformY(team['ys'][animation_time-j], false, height));
 			}
+			ctx.stroke();
 			ctx.beginPath();
 			ctx.arc(transformX(team['xs'][animation_time], false, width), transformY(team['ys'][animation_time], false, height), 5, 0, 2*Math.PI);
 			ctx.fill();
