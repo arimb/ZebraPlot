@@ -121,7 +121,7 @@ img, canvas {
   cursor: pointer;
 }
 div.controls {
-	 display: flex;
+	 display: none;
 }
 span.time {
 	white-space: pre;
