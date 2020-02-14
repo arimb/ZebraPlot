@@ -5,7 +5,6 @@
 	<script type="text/javascript" src='https://code.jquery.com/jquery-3.4.1.min.js'></script>
 	<script type="text/javascript" src='heatmap.min.js'></script>
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	<!-- <link href="https://fonts.googleapis.com/css?family=Archivo|Cardo" rel="stylesheet"> -->
 	<link rel="stylesheet" type="text/css" href="ZebraPlot.css">
 	<script type="text/javascript" src='ZebraPlot.js'></script>
 </head>
@@ -23,18 +22,18 @@
 		
 		<div class='tabcontent' align='center'>
 			<select id='event'></select>
-			<div>
+			<div style='margin: 5px auto;'>
 				<div style='display: inline-block;'>
-					<div id='team' style='display: flex;'>
+					<div id='team' style='display: flex; height: 22px; line-height: 22px;'>
 						<span style='margin-right: 3px;'>Team: </span>
 						<select id='team'></select>
 					</div>
-					<div id='match' style='display: none;'>
+					<div id='match' style='display: none; height: 22px; line-height: 22px;'>
 						<span>Match: </span>
 						<select id='match'></select>
 					</div>
 				</div>
-				<button id='go'>GO</button>
+				<button id='go' class='style'>GO</button>
 			</div>
 		</div>
 	</div>
@@ -44,7 +43,7 @@
 
 <div id='main' style='position: relative; display: inline-block;'>
 	<div id='menu'>
-		<button class='menu'>SELECT TEAM</button>
+		<button class='style menu'>SELECT TEAM</button>
 		<span class='loading'>Loading...</span>
 		<fieldset id='key' style='display:none;'>
 			<div id='blue1' class='key-box'>

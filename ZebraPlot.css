@@ -147,24 +147,25 @@ fieldset {
 	display: inline-block;
 }
 
-button.menu {
-	height: 36px;
+button.style {
 	background-color: white;
 	color: black;
 	border: 2px solid black;
+	border-radius: 5px;
 	margin: 1px auto;
 	padding: 1px 10px;
-	font-size: 15px;
-	font-weight: bold;
-	cursor: pointer;
 	transition: all 0.3s;
-	border-radius: 5px;
-
 }
 
-button.menu:hover {
+button.style:hover {
 	background-color: #636363;
 	color: white;
+}
+
+button.menu {
+	height: 36px;
+	font-size: 15px;
+	font-weight: bold;
 }
 
 span.loading {
