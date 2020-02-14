@@ -238,6 +238,8 @@ $(document).ready(function(){
 			else if($('i#pause').is(':visible'))
 				$('i#pause').click();
 		}
+		if(event.keyCode==13 && $('div#modal').is(':visible'))
+			$('button#go').click();
 	});
 	$(window).keydown(function(event){
 		if($('div#control').is(':visible') && event.keyCode==37 && animation_time>0){
@@ -248,6 +250,8 @@ $(document).ready(function(){
 			animation_time++;
 			drawFrame();
 		}
+		if(event.key=='Escape')
+			$('div#modal').hide();
 	});
 });
 
