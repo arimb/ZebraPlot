@@ -5,6 +5,7 @@
 	<script type="text/javascript" src='https://code.jquery.com/jquery-3.4.1.min.js'></script>
 	<script type="text/javascript" src='heatmap.min.js'></script>
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<!-- <link href="https://fonts.googleapis.com/css?family=Archivo|Cardo" rel="stylesheet"> -->
 	<link rel="stylesheet" type="text/css" href="ZebraPlot.css">
 	<script type="text/javascript" src='ZebraPlot.js'></script>
 </head>
@@ -25,7 +26,7 @@
 			<div>
 				<div style='display: inline-block;'>
 					<div id='team' style='display: flex;'>
-						<span>Team: </span>
+						<span style='margin-right: 3px;'>Team: </span>
 						<select id='team'></select>
 					</div>
 					<div id='match' style='display: none;'>
@@ -39,14 +40,47 @@
 	</div>
 </div>
 
-<div id='menu'>
-	<button id='menu'>SELECT TEAM</button>
-	<span id='loading' style='color: red; display: none;'>Loading...</span>
-</div>
 
-<div id='canvas-wrapper' style='position: relative; display: inline-block;'>
+
+<div id='main' style='position: relative; display: inline-block;'>
+	<div id='menu'>
+		<button class='menu'>SELECT TEAM</button>
+		<span class='loading'>Loading...</span>
+		<fieldset id='key' style='display:none;'>
+			<div id='blue1' class='key-box'>
+				<div class='color-box' style='background-color: #202bfa;'></div>
+				<span>Blue 1: </span>
+				<span class='team-key'></span>
+			</div>
+			<div id='blue2' class='key-box'>
+				<div class='color-box' style='background-color: #6a71fc;'></div>
+				<span>Blue 2: </span>
+				<span class='team-key'></span>
+			</div>
+			<div id='blue3' class='key-box'>
+				<div class='color-box' style='background-color: #17b2ff;'></div>
+				<span>Blue 3: </span>
+				<span class='team-key'></span>
+			</div>
+			<div id='red1' class='key-box'>
+				<div class='color-box' style='background-color: #fa202f;'></div>
+				<span>Red 1: </span>
+				<span class='team-key'></span>
+			</div>
+			<div id='red2' class='key-box'>
+				<div class='color-box' style='background-color: #fc6a74;'></div>
+				<span>Red 2: </span>
+				<span class='team-key'></span>
+			</div>
+			<div id='red3' class='key-box'>
+				<div class='color-box' style='background-color: #ff6017;'></div>
+				<span>Red 3: </span>
+				<span class='team-key'></span>
+			</div>
+		</fieldset>
+	</div>
 	<img id='image' src='Field.png'>
-	<div id='control' style='display: flex;'>
+	<div id='control' class='controls'>
 		<i id='back' class="material-icons">skip_previous</i>
 		<i id='play' class="material-icons">play_arrow</i>
 		<i id='pause' class="material-icons" style='display: none;'>pause</i>

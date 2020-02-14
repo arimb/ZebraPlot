@@ -49,7 +49,7 @@ $(document).ready(function(){
 	})
 	$(window).resize();
 
-	$('button#menu').click(function(){
+	$('button.menu').click(function(){
 		$('div#modal').show();
 	});
 	$('span#close').click(function(){
@@ -94,12 +94,13 @@ $(document).ready(function(){
 
 	$('button#go').click(function(){
 		$('div#modal').hide();
-		$('span#loading').show();
+		$('span.loading').show();
 		$('canvas').remove();
 
 		switch ($('.tablinks.active')[0].id) {
 			case 'Heatmap':
 				$('div#control').hide();
+				$('fieldset').hide();
 				var request = new XMLHttpRequest();
 				request.open('GET', tba_api + '/team/' + $('select#team').children('option:selected')[0].value + 
 					'/event/' + $('select#event').children('option:selected')[0].value + '/matches/keys?' + tba_params);
@@ -109,7 +110,7 @@ $(document).ready(function(){
 						resolve($.getJSON(tba_api + '/match/' + match + '/zebra_motionworks', tba_params))));
 					Promise.all(promises).then(results => {
 						var data = [];
-						var heatmapInstance = h337.create({container: $('div#canvas-wrapper')[0], radius:1/54*(width*0.914), opacity:0.5, blur:0.6});
+						var heatmapInstance = h337.create({container: $('div#main')[0], radius:1/54*(width*0.914), opacity:0.5, blur:0.6});
 						results.forEach(match_data => {
 							['blue', 'red'].forEach(alliance => {
 								match_data['alliances'][alliance].forEach(team => {
@@ -129,7 +130,7 @@ $(document).ready(function(){
 							max: data.length/500,
 							data: data
 						});
-						$('span#loading').hide();
+						$('span.loading').hide();
 					});
 				};
 				request.onerror = function(err){console.log(err);};
@@ -137,7 +138,8 @@ $(document).ready(function(){
 			break;
 			case 'AutoPath':
 				$('div#control').hide();
-				$('div#canvas-wrapper').append('<canvas id="autopaths" width="'+width+'" height="'+height+'" style="position:absolute; left: 0px; top: 0px;"></canvas>')
+				$('fieldset').hide();
+				$('div#main').append('<canvas id="autopaths" width="'+width+'" height="'+height+'" style="position:absolute; left: 0px; top: 0px;"></canvas>')
 				var ctx = $('canvas')[0].getContext('2d');
 				ctx.lineWidth = "2";
 				
@@ -168,7 +170,7 @@ $(document).ready(function(){
 								});
 							});
 						});
-						$('span#loading').hide();
+						$('span.loading').hide();
 					});
 				};
 				request.onerror = function(err){console.log(err);};
@@ -176,17 +178,23 @@ $(document).ready(function(){
 			break;
 			case 'Playback':
 				$('div#control').css('display', 'flex');
-				$('div#canvas-wrapper').append('<canvas id="autopaths" width="'+width+'" height="'+height+'" style="position:absolute; left: 0px; top: 0px;"></canvas>')
+				$('fieldset').show();
+				$('div#main').append('<canvas id="autopaths" width="'+width+'" height="'+height+'" style="position:absolute; left: 0px; top: 0px;"></canvas>')
 				var request = new XMLHttpRequest();
 				request.open('GET', tba_api + '/match/' + $('select#match').children('option:selected')[0].value + '/zebra_motionworks?' + tba_params);
 				request.onload = function(){
 					animation_time = 0;
 					animation_data = JSON.parse(this.response);
+					['red', 'blue'].forEach(alliance => {
+						animation_data['alliances'][alliance].forEach(function(team, i){
+							$('div.key-box#'+alliance+(i+1)+' > span.team-key').html(team['team_key'].substring(3));
+						});
+					});
 					console.log(animation_data)
 					$('span#time-current').html('00:00');
 					$('span#time-length').html(String(Math.floor(animation_data['times'].length/600)).padStart(2, '0') + ':' + String(Math.floor((animation_data['times'].length/10)%60)).padStart(2, '0'));
 					$('input#time-slider').attr('max', animation_data['times'].length);
-					$('span#loading').hide();
+					$('span.loading').hide();
 					drawFrame();
 				}
 				request.onerror = function(err){console.log(err);};
@@ -232,11 +240,11 @@ $(document).ready(function(){
 		}
 	});
 	$(window).keydown(function(event){
-		if($('div#control').is(':visible') && event.keyCode==37){
+		if($('div#control').is(':visible') && event.keyCode==37 && animation_time>0){
 			animation_time--;
 			drawFrame();
 		}
-		if($('div#control').is(':visible') && event.keyCode==39){
+		if($('div#control').is(':visible') && event.keyCode==39 &&animation_time<animation_data['times'].length){
 			animation_time++;
 			drawFrame();
 		}
