@@ -110,7 +110,7 @@ $(document).ready(function(){
 						resolve($.getJSON(tba_api + '/match/' + match + '/zebra_motionworks', tba_params))));
 					Promise.all(promises).then(results => {
 						var data = [];
-						var heatmapInstance = h337.create({container: $('div#main')[0], radius:1/54*(width*0.914), opacity:0.5, blur:0.6});
+						var heatmapInstance = h337.create({container: $('div#content-wrapper')[0], radius:1/54*(width*0.914), opacity:0.5, blur:0.6});
 						results.forEach(match_data => {
 							['blue', 'red'].forEach(alliance => {
 								match_data['alliances'][alliance].forEach(team => {
@@ -139,7 +139,7 @@ $(document).ready(function(){
 			case 'AutoPath':
 				$('div#control').hide();
 				$('fieldset').hide();
-				$('div#main').append('<canvas id="autopaths" width="'+width+'" height="'+height+'" style="position:absolute; left: 0px; top: 0px;"></canvas>')
+				$('div#content-wrapper').append('<canvas id="autopaths" width="'+width+'" height="'+height+'" style="position:absolute; left: 0px; top: 0px;"></canvas>')
 				var ctx = $('canvas')[0].getContext('2d');
 				ctx.lineWidth = "2";
 				
@@ -179,7 +179,7 @@ $(document).ready(function(){
 			case 'Playback':
 				$('div#control').css('display', 'flex');
 				$('fieldset').show();
-				$('div#main').append('<canvas id="autopaths" width="'+width+'" height="'+height+'" style="position:absolute; left: 0px; top: 0px;"></canvas>')
+				$('div#content-wrapper').append('<canvas id="autopaths" width="'+width+'" height="'+height+'" style="position:absolute; left: 0px; top: 0px;"></canvas>')
 				var request = new XMLHttpRequest();
 				request.open('GET', tba_api + '/match/' + $('select#match').children('option:selected')[0].value + '/zebra_motionworks?' + tba_params);
 				request.onload = function(){
