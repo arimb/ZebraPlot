@@ -179,7 +179,7 @@ $(document).ready(function(){
 			case 'Playback':
 				$('div#control').css('display', 'flex');
 				$('fieldset').show();
-				$('div#content-wrapper').append('<canvas id="autopaths" width="'+width+'" height="'+height+'" style="position:absolute; left: 0px; top: 0px;"></canvas>')
+				$('div#content-wrapper').append('<canvas id="playback" width="'+width+'" height="'+height+'" style="position:absolute; left: 0px; top: 0px;"></canvas>')
 				var request = new XMLHttpRequest();
 				request.open('GET', tba_api + '/match/' + $('select#match').children('option:selected')[0].value + '/zebra_motionworks?' + tba_params);
 				request.onload = function(){
