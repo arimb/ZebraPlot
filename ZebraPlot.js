@@ -1,5 +1,4 @@
 const events = {
-	'Chezy Champs': '2019cc',
 	'Midwest Regional': '2020ilch',
 	'SBPLI 1': '2020nyli',
 	'SBPLI 2': '2020nyli2',
