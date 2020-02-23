@@ -1,6 +1,4 @@
 const events = {
-	'Chezy Champs': '2019cc',
-	'Indiana Robotics Invit. 2019': '2019iri',
 	'Midwest Regional': '2020ilch',
 	'SBPLI 1': '2020nyli',
 	'SBPLI 2': '2020nyli2',
@@ -111,7 +109,7 @@ $(document).ready(function(){
 						resolve($.getJSON(tba_api + '/match/' + match + '/zebra_motionworks', tba_params))));
 					Promise.all(promises).then(results => {
 						var data = [];
-						var heatmapInstance = h337.create({container: $('div#content-wrapper')[0], radius:1/54*(width*0.914), opacity:0.5, blur:0.6});
+						var heatmapInstance = h337.create({container: $('div#content-wrapper')[0], radius:1/52.46*(width*0.914), opacity:0.5, blur:0.6});
 						results.forEach(match_data => {
 							['blue', 'red'].forEach(alliance => {
 								match_data['alliances'][alliance].forEach(team => {
@@ -271,13 +269,13 @@ function openTab(evt, tabName){
 function transformX(a, flip, width){
 	if(a == null)
 		return null
-	return Math.round((flip?a/54:(1-a/54))*(width*0.914)+(width*0.0422))
+	return Math.round((flip?a/52.46:(1-a/52.46))*(width*0.914)+(width*0.0422))
 }
 
 function transformY(a, flip, height){
 	if(a == null)
 		return null
-	return Math.round((height*0.95)-(flip?a/27:(1-a/27))*(height*0.901))
+	return Math.round((height*0.95)-(flip?a/26.94:(1-a/26.94))*(height*0.901))
 }
 
 function animate(){
