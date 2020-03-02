@@ -108,7 +108,6 @@ $(document).ready(function(){
 					const promises = matches.map(match => new Promise(resolve => 
 						resolve($.getJSON(tba_api + '/match/' + match + '/zebra_motionworks', tba_params))).catch(e => null));
 					Promise.all(promises).then(results => {
-						console.log('hit');
 						var data = [];
 						var heatmapInstance = h337.create({container: $('div#content-wrapper')[0], radius:1/52.46*(width*0.914), opacity:0.5, blur:0.6});
 						results.forEach(match_data => {
